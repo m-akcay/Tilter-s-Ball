@@ -5,29 +5,35 @@ using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
+    public static bool gameIsStopped = true;
     private readonly int levelOffset = 2;
     public int currentLevel { get; private set; }
     //private WallFactory factory;
-    private bool first3Levels;
     public bool shouldCreateNewLevel;
     private float deltaTime;
     private Level lastCreatedLevel;
     public Text fpsText;
 
+    public GameObject finisherObj;
+
     void Start()
     {
 #if UNITY_EDITOR || UNITY_STANDALONE
         Application.targetFrameRate = -1;
-        Application.targetFrameRate = 60;
-
 #elif UNITY_ANDROID
         Application.targetFrameRate = 60;
         Input.gyro.enabled = true;
 #endif
-        //RenderSettings.skybox.SetFloat("_Exposure", 0.9f);
-        
+        //PlayerPrefs.DeleteAll();
+        if (!PlayerPrefs.HasKey("highscore"))
+        {
+            PlayerPrefs.SetInt("highscore", 0);
+            PlayerPrefs.SetInt("highscore_level", 0);
+        }
+
+        Util.createPointTexture();
+
         currentLevel = 1;
-        first3Levels = true;
 
         shouldCreateNewLevel = false;
         createFirstLevels();
@@ -35,11 +41,19 @@ public class LevelManager : MonoBehaviour
 
     void Update()
     {
+        if (gameIsStopped)
+            return;
+
         deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
         float fps = 1.0f / deltaTime;
         fpsText.text = fps.ToString();
         //Debug.LogWarning(Mathf.Ceil(fps));
         Wall.SPAWN_Z = lastCreatedLevel.walls[0].transform.position.z + 2;
+
+        // put finisherObj between this and next level so that
+        // if player misses the hole, trigger happens immediately
+        // 2 is the Z distance between 2 levels
+        finisherObj.transform.setPositionZ(Wall.SPAWN_Z - 5);
 
         if (shouldCreateNewLevel)
         {
@@ -65,7 +79,7 @@ public class LevelManager : MonoBehaviour
         {
             var color = Util.randColor();
             level.setColor(color);
-            level.activate();
+            //level.activate();
         }
 
         lastCreatedLevel = firstLevels[2];
@@ -77,7 +91,7 @@ public class LevelManager : MonoBehaviour
         currentLevel++;
     }
 
-    private static Level createLevel(int currentLevel)
+    private Level createLevel(int currentLevel)
     {
         GameObject levelObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
         levelObj.name = "LEVEL_" + currentLevel;
@@ -87,5 +101,11 @@ public class LevelManager : MonoBehaviour
 
         Level level = levelObj.AddComponent<Level>().init(currentLevel);
         return level;
+    }
+    public void endGame()
+    {
+        gameIsStopped = true;
+        var levels = new List<GameObject>(GameObject.FindGameObjectsWithTag("level"));
+        levels.ForEach(level => level.GetComponent<Level>().destroy());
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using UnityEngine.VFX;
 
 public class BallController : MonoBehaviour
@@ -14,12 +15,14 @@ public class BallController : MonoBehaviour
     private bool goingLeft;
 
     private bool collidedWithHole;
-    private bool vfxRunning;
-    private VisualEffect vfx;
     private Material mat;
-    private Material postProcessMaterial;
-
+    private PostFXBinder postFXBinder;
     private LevelManager lvlManager;
+    private bool activated;
+
+    public bool prefTest;
+    public Text scoreText;
+
     private void Start()
     {
         Physics.gravity *= 0.5f;
@@ -28,16 +31,16 @@ public class BallController : MonoBehaviour
         goingLeft = false;
         goingRight = false;
         collidedWithHole = false;
-        vfxRunning = false;
         lvlManager = GameObject.Find("GameManagerObject").GetComponent<LevelManager>();
         mat = this.GetComponent<Renderer>().material;
-        postProcessMaterial = GameObject.Find("RenderedQuad").GetComponent<Renderer>().material;
-        //vfx = this.gameObject.GetComponent<VisualEffect>();
+        postFXBinder = this.GetComponent<PostFXBinder>();
+        activated = false;
     }
 
     private void Update()
     {
-
+        if (!this.activated)
+            return;
 #if UNITY_EDITOR || UNITY_STANDALONE
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -74,7 +77,6 @@ public class BallController : MonoBehaviour
         if (collidedWithHole)
         {
             collidedWithHole = false;
-            vfxRunning = true;
 
             switch (scoreFromThisLevel)
             {
@@ -97,6 +99,9 @@ public class BallController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!this.activated)
+            return;
+
         if (jumping)
         {
             jumping = false;
@@ -127,6 +132,7 @@ public class BallController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         GameObject collisionObj = collision.gameObject;
+
         if (collisionObj.tag == "hole")
         {
             Hole hole = collisionObj.GetComponent<Hole>();
@@ -137,28 +143,53 @@ public class BallController : MonoBehaviour
                 Vector2 contactPt = collision.GetContact(0).point;
                 this.scoreFromThisLevel = hole.calculateScore(contactPt);
                 this.score += scoreFromThisLevel;
-                Level level = hole.transform.parent.GetComponent<Level>();
-                level.destroy();
+                hole.transform.parent.GetComponent<Level>().destroy();
+
                 lvlManager.levelUp();
 
                 collidedWithHole = true;
                 Debug.Log(this.score);
-                postProcessMaterial.SetInt("_ShouldBlur", 0);
+                postFXBinder.disableFX();
             }
         }
         
         if (collisionObj.tag == "wall")
         {
-            Vector4 contactPt = collision.GetContact(0).point;
-            contactPt.w = collision.relativeVelocity.magnitude;
-            postProcessMaterial.SetInt("_ShouldBlur", 1);
-            postProcessMaterial.SetVector("_CollisionWithWall_WS", contactPt);
+            postFXBinder.bindBlurPosAndSpd(collision.GetContact(0).point, 
+                                            collision.relativeVelocity.magnitude);
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "finisher")
+        {
+            lvlManager.endGame();
 
+            if (PlayerPrefs.GetInt("highscore") < this.score)
+            {
+                scoreText.text = "new high score -> " + this.score + ("\nlevel -> ") + (lvlManager.currentLevel - 1);
+                PlayerPrefs.SetInt("highscore", this.score);
+                PlayerPrefs.SetInt("highscore_level", lvlManager.currentLevel - 1);
+            }
+            else
+            {
+                scoreText.text = "score -> " + this.score + "\nlevel -> " + (lvlManager.currentLevel - 1) + "\n" +
+                                 "highest score-> " + PlayerPrefs.GetInt("highscore") + " - level " + PlayerPrefs.GetInt("highscore_level");
+            }
+        }
+    }
+    public void activate()
+    {
+        this.activated = true;
+        this.rb.isKinematic = false;
+    }
+    public void deactivate()
+    {
+        this.activated = false;
+        this.rb.isKinematic = true;
+    }
     private void OnDestroy()
     {
         Destroy(this.mat);
-        Destroy(this.postProcessMaterial);
     }
 }

@@ -80,14 +80,12 @@ public class Util
                 colorArr[i * size + j] = color;
             }
         }
-        Debug.LogWarning(maxDist + "   " + maxPt);
-        TextureRenderer.pointTexture = new Texture2D(size, size, TextureFormat.RGBA32, false);
-        TextureRenderer.pointTexture.wrapMode = TextureWrapMode.Clamp;
-        TextureRenderer.pointTexture.filterMode = FilterMode.Trilinear;
-        TextureRenderer.pointTexture.SetPixels(colorArr);
-        TextureRenderer.pointTexture.Apply();
-        Shader.SetGlobalTexture("Texture2D_70E33B5E", TextureRenderer.pointTexture);
-        //AssetDatabase.CreateAsset(TextureRenderer.pointTexture, "Assets/PointTexture.png");
+        Texture2D pointTexture = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        pointTexture.wrapMode = TextureWrapMode.Clamp;
+        pointTexture.filterMode = FilterMode.Trilinear;
+        pointTexture.SetPixels(colorArr);
+        pointTexture.Apply();
+        Shader.SetGlobalTexture("Texture2D_70E33B5E", pointTexture);
     }
 
     private static Color lerp(Color c0, Color c1, float t)
@@ -114,6 +112,28 @@ public static class Vector3Extensions
         return new Vector2(v.x, v.y);
     }
 
+    public static void setXY(this Vector3 v, Vector2 v2)
+    {
+        v.x = v2.x;
+        v.y = v2.y;
+    }
+    public static Vector3 fromValue(this Vector3 v, float val)
+    {
+        return new Vector3(val, val, val);
+    }
+    public static Vector3 fromZ(this Vector3 v, float z)
+    {
+        return new Vector3(v.x, v.y, z);
+    }
+    public static Vector3 fromVec2(this Vector3 v3, Vector2 v2)
+    {
+        return new Vector3(v2.x, v2.y, v3.z);
+    }
+    public static Vector3 fromVec2(Vector2 v2)
+    {
+        return new Vector3(v2.x, v2.y, 0);
+    }
+
     public static Vector4 toVec4(this Vector3 v, float w)
     {
         return new Vector4(v.x, v.y, v.z, w);
@@ -127,6 +147,14 @@ public static class Vector3Extensions
 
 public static class TransformExtensions
 {
+    public static void setPositionXY(this Transform transform, Vector2 v2)
+    {
+        transform.position = transform.position.fromVec2(v2);
+    }
+    public static void setPositionZ(this Transform transform, float z)
+    {
+        transform.position = transform.position.fromZ(z);
+    }
     public static Vector2 transformPoint(this Transform transform, Vector2 point)
     {
         return new Vector2();

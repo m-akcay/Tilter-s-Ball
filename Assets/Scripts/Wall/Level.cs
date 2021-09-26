@@ -15,8 +15,6 @@ public class Level : MonoBehaviour
     public List<Wall> walls { get; private set; }
     public Wall largestWall { get; }
     public int levelNo { get; private set; }
-
-    private GameObject hole;
     public Level init(int levelNo)
     {
         this.gameObject.layer = Wall.LAYER;
@@ -46,6 +44,10 @@ public class Level : MonoBehaviour
     public void activate()
     {
         this.walls.ForEach(wall => wall.activate());
+    }
+    public void deactivate()
+    {
+        this.walls.ForEach(wall => wall.deactivate());
     }
     public void setColorAndActivateLevel(Color color)
     {
@@ -95,13 +97,13 @@ public class Level : MonoBehaviour
         return wall;
     }
 
-    private Wall createHole(float randX, float randY, int level)
+    private Hole createHole(float randX, float randY, int level)
     {
         float top = randY + Wall.HOLE_SIZE;
         float bottom = randY - Wall.HOLE_SIZE;
         float left = randX - Wall.HOLE_SIZE;
         float right = randX + Wall.HOLE_SIZE;
-        Wall hole = GameObject.CreatePrimitive(PrimitiveType.Cube)
+        Hole hole = GameObject.CreatePrimitive(PrimitiveType.Cube)
             .AddComponent<Hole>();
         hole.init(top, bottom, left, right, level, this.gameObject.transform);
         return hole;

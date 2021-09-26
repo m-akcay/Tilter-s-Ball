@@ -23,7 +23,7 @@ public abstract class Wall : MonoBehaviour
     protected bool isMoving;
     protected Rigidbody rb;
     protected Material mat;
-    public bool activated { get; protected set; }
+    public bool activated;
 
     public virtual void init(float top, float bottom, float left, float right, int levelNo, Transform parent)
     {
@@ -61,6 +61,13 @@ public abstract class Wall : MonoBehaviour
         rb.isKinematic = false;
         rb.velocity = Vector3.back * (1 + this.levelNo * 0.01f);
     }
+
+    public void deactivate()
+    {
+        this.activated = false;
+        rb.isKinematic = true;
+    }
+
     public virtual void setColor(Color color)
     {
         if (!mat)
@@ -81,6 +88,9 @@ public abstract class Wall : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (!this.activated)
+            return;
+
         if (gettingDestroyed && this.transform.position.z < 0)
         {
             destroyWall_pt2();
@@ -89,6 +99,9 @@ public abstract class Wall : MonoBehaviour
 
     protected void FixedUpdate()
     {
+        if (!this.activated)
+            return;
+
         if (gettingDestroyed)
             moveThisWall();
     }
@@ -112,7 +125,6 @@ public abstract class Wall : MonoBehaviour
 
     public void destroyWall()
     {
-        this.activated = false;
         gettingDestroyed = true;
         moveThisWall();
     }

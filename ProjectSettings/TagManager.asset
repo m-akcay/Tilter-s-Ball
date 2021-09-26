@@ -8,6 +8,7 @@ TagManager:
   - hole
   - destroyer
   - wall
+  - finisher
   layers:
   - Default
   - TransparentFX

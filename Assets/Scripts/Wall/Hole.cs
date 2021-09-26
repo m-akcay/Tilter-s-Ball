@@ -31,7 +31,7 @@ public class Hole : Wall
     }
     protected override void setDestroyDirection()
     {
-        this.destroyDirection = Vector3.back * 0.1f;
+        this.destroyDirection = Vector3.back * 0.4f;
     }
 
     public int calculateScore(Vector2 contactPtWS)

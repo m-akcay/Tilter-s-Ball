@@ -85,24 +85,6 @@ Shader "Unlit/SideWallShader"
             float4 frag(FragInput i) : SV_Target
             {
                 float4 col = _Color;
-                //float3 normal = UnpackNormal(tex2D(_NormalMap, i.texCoord));
-                //normal.y = -normal.y;
-               /* float refrVal = normal.g;
-                float3 envCoord;
-                float4 envColor = texCUBE(_EnvMap, envCoord) * 4;*/
-
-                //if (refrVal > 0.01f)
-                //{
-                //    refrVal = refrVal + 1;
-                //    envCoord = refract(i.viewDir, normal, 1);
-                //    //envCoord = reflect(i.viewDir, normal);
-                //    envColor = texCUBElod(_EnvMap, float4(envCoord, 0.3f)) * 4;
-                //}
-                //else
-                //{
-                //    envCoord = normalize(i.viewDir);
-                //    envColor = texCUBE(_EnvMap, envCoord) * 4;
-                //}
 
                 float distX = distance(ballPos.x, thisWallPosX);
                 if (distX < 0.3f)
@@ -125,9 +107,6 @@ Shader "Unlit/SideWallShader"
                     col.a = clamp(col.a, 0.0f, 1.0f);
                 }
 
-                //col.rgb = lerp(envColor.rgb, col.rgb, 0.5f);
-                //col.rgb = lerp(envColor.rgb, col.rgb, col.a);
-                //col.a = 1;
                 return col;
             }
 
