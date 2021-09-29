@@ -53,7 +53,7 @@ Material:
     - _Blend: 0
     - _BlurStrength: 5
     - _BumpScale: 1
-    - _CollisionSpeed: 3.89
+    - _CollisionSpeed: 1
     - _Cull: 2
     - _Cutoff: 0.5
     - _DstBlend: 0

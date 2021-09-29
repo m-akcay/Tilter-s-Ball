@@ -25,7 +25,6 @@ public class Util
 
         return new Color(r, g, b);
     }
-
     public static void createPointTexture()
     {
         Color PURPLE = new Color(0.719f, 0, 1.0f);
@@ -75,7 +74,7 @@ public class Util
                     float greenToWhite = smoothstep(blueLimit, greenLimit, dist);
                     color = lerp(GREEN, WHITE, greenToWhite);
                 }
-                color.a = 1 - smoothstep(0.0f, greenLimit * 1.5f, dist);
+                color.a = (1 - smoothstep(0.0f, greenLimit * 1.5f, dist)) * 0.9f;
 
                 colorArr[i * size + j] = color;
             }
@@ -112,6 +111,10 @@ public static class Vector3Extensions
         return new Vector2(v.x, v.y);
     }
 
+    public static Vector3 flippedXY(this Vector3 v)
+    {
+        return new Vector3(v.y, v.x, v.z);
+    }
     public static void setXY(this Vector3 v, Vector2 v2)
     {
         v.x = v2.x;
@@ -160,3 +163,12 @@ public static class TransformExtensions
         return new Vector2();
     }
 }
+
+public static class ColorExtensions
+{ 
+    public static Color zeroAlpha(this Color c)
+    {
+        return new Color(c.r, c.g, c.b, 0);
+    }
+}
+

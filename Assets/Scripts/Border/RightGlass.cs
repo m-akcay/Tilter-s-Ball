@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class RightGlass : BorderGlass
+﻿public class RightGlass : BorderGlass
 {
     protected override void Start()
     {

@@ -13,7 +13,7 @@ Material:
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses:
   - SHADOWCASTER
@@ -89,11 +89,11 @@ Material:
     - thisWallPosY: -0.5
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
-    - _Color: {r: 0, g: 0.9098039, b: 0.81986153, a: 0}
+    - _Color: {r: 0, g: 1, b: 0.0027880669, a: 0}
     - _Emission: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - ballPos: {r: 0.21, g: -0.5, b: -0.162, a: 1}
+    - ballPos: {r: 0.21, g: 0.39, b: -0.162, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &6740597061303454063
 MonoBehaviour:

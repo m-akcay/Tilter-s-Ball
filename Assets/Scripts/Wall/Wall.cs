@@ -6,6 +6,7 @@ public abstract class Wall : MonoBehaviour
 {
     public static readonly float THICKNESS = 0.025f;
     public static readonly float HOLE_SIZE = 0.2f;
+    public static readonly float SPAWN_Z_DEFAULT = 8;
     public static float SPAWN_Z = 8;
     public static int LAYER = 8;
 
@@ -91,7 +92,7 @@ public abstract class Wall : MonoBehaviour
         if (!this.activated)
             return;
 
-        if (gettingDestroyed && this.transform.position.z < 0)
+        if (gettingDestroyed && (this.transform.position.z < 0 || this.transform.position.y < -1))
         {
             destroyWall_pt2();
         }

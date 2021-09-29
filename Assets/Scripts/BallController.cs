@@ -7,7 +7,7 @@ using UnityEngine.VFX;
 
 public class BallController : MonoBehaviour
 {
-    private int score = 0;
+    private int score;
     private int scoreFromThisLevel = 0;
     private Rigidbody rb;
     private bool jumping;
@@ -17,26 +17,28 @@ public class BallController : MonoBehaviour
     private bool collidedWithHole;
     private Material mat;
     private PostFXBinder postFXBinder;
-    private LevelManager lvlManager;
+    [SerializeField]
+    private LevelManager lvlManager = null;
     private bool activated;
 
     public bool prefTest;
     public Text scoreText;
 
-    private void Start()
+    public void Start()
     {
-        Physics.gravity *= 0.5f;
         rb = this.GetComponent<Rigidbody>();
         jumping = false;
         goingLeft = false;
         goingRight = false;
         collidedWithHole = false;
-        lvlManager = GameObject.Find("GameManagerObject").GetComponent<LevelManager>();
+        //lvlManager = GameObject.Find("GameManagerObject").GetComponent<LevelManager>();
         mat = this.GetComponent<Renderer>().material;
         postFXBinder = this.GetComponent<PostFXBinder>();
         activated = false;
+        score = 0;
+        scoreText.text = "";
     }
-
+   
     private void Update()
     {
         if (!this.activated)
@@ -93,6 +95,9 @@ public class BallController : MonoBehaviour
                     break;
             }
 
+            Shader.SetGlobalVector("_BallColor", mat.color.zeroAlpha());
+            //Shader.SetGlobalColor("_Color", mat.color);
+
         }
 
     }
@@ -125,12 +130,12 @@ public class BallController : MonoBehaviour
         }
 
 #endif
-        //if (Input.GetKeyDown(KeyCode.K))
-        //    SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (LevelManager.gameIsStopped)
+            return;
         GameObject collisionObj = collision.gameObject;
 
         if (collisionObj.tag == "hole")
@@ -155,7 +160,7 @@ public class BallController : MonoBehaviour
         
         if (collisionObj.tag == "wall")
         {
-            postFXBinder.bindBlurPosAndSpd(collision.GetContact(0).point, 
+            postFXBinder.bindBlurPosAndSpd(collision.GetContact(0).point,
                                             collision.relativeVelocity.magnitude);
         }
     }
@@ -163,7 +168,8 @@ public class BallController : MonoBehaviour
     {
         if (other.gameObject.tag == "finisher")
         {
-            lvlManager.endGame();
+            postFXBinder.disableFX();
+            StartCoroutine(lvlManager.endGame());
 
             if (PlayerPrefs.GetInt("highscore") < this.score)
             {

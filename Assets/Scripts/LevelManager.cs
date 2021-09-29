@@ -5,18 +5,26 @@ using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField]
+    private bool firstTime = true;
     public static bool gameIsStopped = true;
     private readonly int levelOffset = 2;
-    public int currentLevel { get; private set; }
-    //private WallFactory factory;
+
+    public int currentLevel { get; private set; } = 1;
+    [HideInInspector]
     public bool shouldCreateNewLevel;
     private float deltaTime;
     private Level lastCreatedLevel;
-    public Text fpsText;
+    //[SerializeField]
+    //private Text fpsText = null;
+    [SerializeField]
+    private GameObject finisherObj = null;
+    [SerializeField]
+    private GameObject startButton = null;
 
-    public GameObject finisherObj;
+    private Queue<Color> levelColors;
 
-    void Start()
+    public void Start()
     {
 #if UNITY_EDITOR || UNITY_STANDALONE
         Application.targetFrameRate = -1;
@@ -31,12 +39,18 @@ public class LevelManager : MonoBehaviour
             PlayerPrefs.SetInt("highscore_level", 0);
         }
 
-        Util.createPointTexture();
+        if (firstTime)
+        {
+            Util.createPointTexture();
+            Debug.LogWarning("CREATED_PT_TEX");
+        }
 
-        currentLevel = 1;
-
+        levelColors = new Queue<Color>();
+        Wall.SPAWN_Z = Wall.SPAWN_Z_DEFAULT;
         shouldCreateNewLevel = false;
         createFirstLevels();
+        currentLevel = 1;
+        firstTime = false;
     }
 
     void Update()
@@ -44,28 +58,26 @@ public class LevelManager : MonoBehaviour
         if (gameIsStopped)
             return;
 
-        deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-        float fps = 1.0f / deltaTime;
-        fpsText.text = fps.ToString();
-        //Debug.LogWarning(Mathf.Ceil(fps));
+        //deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
+        //float fps = 1.0f / deltaTime;
+        //fpsText.text = fps.ToString();
         Wall.SPAWN_Z = lastCreatedLevel.walls[0].transform.position.z + 2;
 
         // put finisherObj between this and next level so that
         // if player misses the hole, trigger happens immediately
         // 2 is the Z distance between 2 levels
         finisherObj.transform.setPositionZ(Wall.SPAWN_Z - 5);
-
+        
         if (shouldCreateNewLevel)
         {
             shouldCreateNewLevel = false;
             var color = Util.randColor();
             var level = createLevel(currentLevel + levelOffset);
             level.setColorAndActivateLevel(color);
-
+            levelColors.Enqueue(color);
             lastCreatedLevel = level;
         }
     }
-
     private void createFirstLevels()
     {
         var firstLevels = new List<Level> { createLevel(1), createLevel(2), createLevel(3) };
@@ -79,18 +91,19 @@ public class LevelManager : MonoBehaviour
         {
             var color = Util.randColor();
             level.setColor(color);
-            //level.activate();
+            levelColors.Enqueue(color);
         }
 
         lastCreatedLevel = firstLevels[2];
+        Shader.SetGlobalColor("_LevelColor", levelColors.Dequeue());
     }
 
     public void levelUp()
     {
         shouldCreateNewLevel = true;
         currentLevel++;
+        Shader.SetGlobalColor("_LevelColor", levelColors.Dequeue());
     }
-
     private Level createLevel(int currentLevel)
     {
         GameObject levelObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -98,14 +111,15 @@ public class LevelManager : MonoBehaviour
         levelObj.tag = "level";
         levelObj.transform.position = new Vector3(0.5f, -0.5f, Wall.SPAWN_Z);
         levelObj.GetComponent<Renderer>().enabled = false;
-
         Level level = levelObj.AddComponent<Level>().init(currentLevel);
         return level;
     }
-    public void endGame()
+    public IEnumerator endGame()
     {
         gameIsStopped = true;
         var levels = new List<GameObject>(GameObject.FindGameObjectsWithTag("level"));
         levels.ForEach(level => level.GetComponent<Level>().destroy());
+        yield return new WaitForSeconds(3);
+        startButton.SetActive(true);
     }
 }

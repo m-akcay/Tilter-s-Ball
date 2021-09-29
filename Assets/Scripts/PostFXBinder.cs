@@ -19,14 +19,12 @@ public class PostFXBinder : MonoBehaviour
     {
         postFXObj.transform.setPositionXY(pos);
         postFXObj.transform.localScale = baseScale.xy() * spd;
-        //postFXObj.GetComponent<Renderer>().enabled = true;
         postFXMaterial.SetFloat("_CollisionSpeed", spd);
     }
 
     public void disableFX()
     {
         postFXObj.transform.setPositionXY(new Vector2(10, 10));
-        //postFXObj.GetComponent<Renderer>().enabled = false;
     }
 
     private void OnDestroy()

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class BorderGlass : MonoBehaviour
@@ -14,7 +13,7 @@ public abstract class BorderGlass : MonoBehaviour
             .transform;
     }
 
-    protected void Update()
+    private void Update()
     {
         // feed the shader
         mat.SetVector("ballPos", ballTransform.position);
