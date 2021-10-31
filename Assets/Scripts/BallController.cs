@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -22,7 +23,8 @@ public class BallController : MonoBehaviour
     private bool activated;
 
     public bool prefTest;
-    public Text scoreText;
+    [SerializeField]
+    private TextMeshProUGUI scoreText = null;
 
     public void Start()
     {
