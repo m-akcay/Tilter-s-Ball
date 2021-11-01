@@ -175,14 +175,14 @@ public class BallController : MonoBehaviour
 
             if (PlayerPrefs.GetInt("highscore") < this.score)
             {
-                scoreText.text = "new high score -> " + this.score + ("\nlevel -> ") + (lvlManager.currentLevel - 1);
+                scoreText.text = "NEW HIGH SCORE -> " + this.score + ("\nLEVEL -> ") + (lvlManager.currentLevel - 1);
                 PlayerPrefs.SetInt("highscore", this.score);
                 PlayerPrefs.SetInt("highscore_level", lvlManager.currentLevel - 1);
             }
             else
             {
-                scoreText.text = "score -> " + this.score + "\nlevel -> " + (lvlManager.currentLevel - 1) + "\n" +
-                                 "highest score-> " + PlayerPrefs.GetInt("highscore") + " - level " + PlayerPrefs.GetInt("highscore_level");
+                scoreText.text = "SCORE -> " + this.score + "\nlevel -> " + (lvlManager.currentLevel - 1) + "\n" +
+                                 "HIGHEST SCORE -> " + PlayerPrefs.GetInt("highscore") + " - LEVEL " + PlayerPrefs.GetInt("highscore_level");
             }
         }
     }
