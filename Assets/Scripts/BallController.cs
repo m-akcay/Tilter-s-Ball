@@ -26,6 +26,8 @@ public class BallController : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI scoreText = null;
 
+    [SerializeField] private TextMeshProUGUI levelText = null;
+
     public void Start()
     {
         rb = this.GetComponent<Rigidbody>();
@@ -157,6 +159,9 @@ public class BallController : MonoBehaviour
                 collidedWithHole = true;
                 Debug.Log(this.score);
                 postFXBinder.disableFX();
+
+                if (UIController.getGraphicsQuality() == GraphicsQuality.LOW)
+                    levelText.text = (lvlManager.currentLevel - 1).ToString();
             }
         }
         
@@ -166,6 +171,7 @@ public class BallController : MonoBehaviour
                                             collision.relativeVelocity.magnitude);
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "finisher")
@@ -186,18 +192,22 @@ public class BallController : MonoBehaviour
             }
         }
     }
+
     public void activate()
     {
         this.activated = true;
         this.rb.isKinematic = false;
     }
+
     public void deactivate()
     {
         this.activated = false;
         this.rb.isKinematic = true;
     }
+
     private void OnDestroy()
     {
         Destroy(this.mat);
     }
+
 }

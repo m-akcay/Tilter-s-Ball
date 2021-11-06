@@ -25,6 +25,7 @@ public abstract class Wall : MonoBehaviour
     protected Rigidbody rb;
     protected Material mat;
     public bool activated;
+    public Color color { get; private set; }
 
     public virtual void init(float top, float bottom, float left, float right, int levelNo, Transform parent)
     {
@@ -71,15 +72,58 @@ public abstract class Wall : MonoBehaviour
 
     public virtual void setColor(Color color)
     {
-        if (!mat)
-            mat = Instantiate(Resources.Load("Materials/WallMaterial") as Material);
-        mat.SetColor("Color_6655885E", color);
-        if (showLevel)
+        void setMaterial_HIGH()
         {
-            mat.SetInt("Boolean_A04ECFCA", 1);
-            mat.SetInt("Vector1_785B10BC", this.levelNo);
+            if (!mat)
+                mat = Instantiate(Resources.Load("Materials/WallMaterial") as Material);
+            else
+            {
+                Destroy(mat);
+                mat = Instantiate(Resources.Load("Materials/WallMaterial") as Material);
+            }
+
+            this.color = color;
+            mat.SetColor("Color_6655885E", color);
+            if (showLevel)
+            {
+                mat.SetInt("Boolean_A04ECFCA", 1);
+                mat.SetInt("Vector1_785B10BC", this.levelNo);
+            }
+            this.GetComponent<MeshRenderer>().material = mat;
         }
-        this.GetComponent<MeshRenderer>().material = mat;
+
+        void setMaterial_LOW()
+        {
+            if (!mat)
+                mat = Instantiate(Resources.Load("Materials/WallMaterial_LOW") as Material);
+            else
+            {
+                Destroy(mat);
+                mat = Instantiate(Resources.Load("Materials/WallMaterial_LOW") as Material);
+            }
+
+            this.color = color;
+            mat.SetColor("_BaseColor", color);
+
+            this.GetComponent<MeshRenderer>().material = mat;
+        }
+        // WallMaterial_LOW
+
+        switch (UIController.getGraphicsQuality())
+        {
+            case GraphicsQuality.LOW:
+                setMaterial_LOW();
+                break;
+            case GraphicsQuality.MEDIUM:
+                setMaterial_HIGH();
+                break;
+            case GraphicsQuality.HIGH:
+                setMaterial_HIGH();
+                break;
+            default:
+                setMaterial_HIGH();
+                break;
+        }
     }
 
     private void Start()

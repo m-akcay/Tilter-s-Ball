@@ -19,8 +19,8 @@ public class LevelManager : MonoBehaviour
     //private Text fpsText = null;
     [SerializeField]
     private GameObject finisherObj = null;
-    [SerializeField]
-    private GameObject startButton = null;
+    [SerializeField] private GameObject startButton = null;
+    [SerializeField] private GameObject settingsButton = null;
 
     private Queue<Color> levelColors;
 
@@ -121,5 +121,6 @@ public class LevelManager : MonoBehaviour
         levels.ForEach(level => level.GetComponent<Level>().destroy());
         yield return new WaitForSeconds(3);
         startButton.SetActive(true);
+        settingsButton.SetActive(true);
     }
 }
