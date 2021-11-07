@@ -92,6 +92,22 @@ public abstract class Wall : MonoBehaviour
             this.GetComponent<MeshRenderer>().material = mat;
         }
 
+        void setMaterial_MID()
+        {
+            if (!mat)
+                mat = Instantiate(Resources.Load("Materials/WallMaterial_MID") as Material);
+            else
+            {
+                Destroy(mat);
+                mat = Instantiate(Resources.Load("Materials/WallMaterial_MID") as Material);
+            }
+
+            this.color = color;
+            mat.SetColor("_BaseColor", color);
+
+            this.GetComponent<MeshRenderer>().material = mat;
+        }
+
         void setMaterial_LOW()
         {
             if (!mat)

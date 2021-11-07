@@ -41,7 +41,7 @@ float3 getUV(in float2 baseUV, in int level)
 	return float3(0, 0, 0);
 }
 
-void sampleTest_float(in SamplerState ss, in Texture2DArray arr, in float2 baseUV, in int level, out float4 outColor)
+void sampleNumber_float(in SamplerState ss, in Texture2DArray arr, in float2 baseUV, in int level, out float4 outColor)
 {
 	// flip uv
 	//float2 uv = float2(1 - baseUV.x, 1 - baseUV.y);

@@ -27,6 +27,8 @@ public class Util
     }
     public static void createPointTexture()
     {
+        createTextureArray();
+
         Color PURPLE = new Color(0.719f, 0, 1.0f);
         Color BLUE = new Color(0, 0, 1.0f);
         Color GREEN = new Color(0, 1.0f, 0);
@@ -42,8 +44,8 @@ public class Util
         const float blueLimit = 0.3f;
         const float greenLimit  = 0.8f;
 
-        float maxDist = 0;
-        Vector2 maxPt = new Vector2(-1, -1);
+        //float maxDist = 0;
+        //Vector2 maxPt = new Vector2(-1, -1);
 
         for (int i = 0; i < size; i++)
         {
@@ -51,11 +53,11 @@ public class Util
             {
                 Vector2 thisPt = new Vector2((float)i / size, (float)j / size);
                 float dist = Vector2.Distance(thisPt, center);
-                if (dist > maxDist)
-                {
-                    maxDist = dist;
-                    maxPt = thisPt;
-                }
+                //if (dist > maxDist)
+                //{
+                //    maxDist = dist;
+                //    maxPt = thisPt;
+                //}
 
                 Color color;
 
@@ -101,6 +103,20 @@ public class Util
     {
         x = Mathf.Clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
         return x * x * (3 - 2 * x);
+    }
+
+    private static void createTextureArray()
+    {
+        var texArray = new Texture2DArray(256, 256, 10, TextureFormat.ARGB32, false);
+        for (int i = 0; i < 10; i++)
+        {
+            string texName = $"normal_{i}_tex";
+            var tex = Resources.Load($"Number Textures/{texName}") as Texture2D;
+
+            texArray.SetPixels(tex.GetPixels(), i);
+        }
+
+        AssetDatabase.CreateAsset(texArray, "Assets/NumberTextureArray_MID.asset");
     }
 }
 

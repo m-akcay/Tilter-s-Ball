@@ -15,7 +15,7 @@ public class BallController : MonoBehaviour
     private bool goingRight;
     private bool goingLeft;
 
-    private bool collidedWithHole;
+    public bool collidedWithHole { get; private set; }
     private Material mat;
     private PostFXBinder postFXBinder;
     [SerializeField]
@@ -27,6 +27,8 @@ public class BallController : MonoBehaviour
     private TextMeshProUGUI scoreText = null;
 
     [SerializeField] private TextMeshProUGUI levelText = null;
+
+    public int currentLevel { get { return lvlManager.currentLevel - 1; } }
 
     public void Start()
     {
@@ -160,8 +162,8 @@ public class BallController : MonoBehaviour
                 Debug.Log(this.score);
                 postFXBinder.disableFX();
 
-                if (UIController.getGraphicsQuality() == GraphicsQuality.LOW)
-                    levelText.text = (lvlManager.currentLevel - 1).ToString();
+                //if (UIController.getGraphicsQuality() == GraphicsQuality.LOW)
+                //    levelText.text = (lvlManager.currentLevel - 1).ToString();
             }
         }
         

@@ -63,7 +63,7 @@ public class UIController : MonoBehaviour
             PlayerPrefs.SetInt("graphics_quality", (int)_GraphicsQuality);
         }
 
-        levelText.SetActive(_GraphicsQuality == GraphicsQuality.HIGH ? false : true);
+        applyGraphicsSettings();
     }
 
     public void startGame()
@@ -125,13 +125,7 @@ public class UIController : MonoBehaviour
         
         PlayerPrefs.SetInt("graphics_quality", (int)_GraphicsQuality);
 
-        GameObject.FindGameObjectsWithTag("wall").ToList().ForEach(obj =>
-        {
-            Wall wall = obj.GetComponent<Wall>();
-            wall.setColor(wall.color); }
-        );
-
-        levelText.SetActive(_GraphicsQuality == GraphicsQuality.HIGH ? false : true);
+        applyGraphicsSettings();
 
         disableSettingsPanel();
     }
@@ -155,6 +149,37 @@ public class UIController : MonoBehaviour
     {
         settingsPanel.SetActive(false);
         settingsButton.SetActive(true);
+    }
+
+    private void applyGraphicsSettings()
+    {
+        // first 3 levels
+        GameObject.FindGameObjectsWithTag("wall").ToList().ForEach(obj =>
+            {
+                Wall wall = obj.GetComponent<Wall>();
+                wall.setColor(wall.color);
+            }
+        );
+
+        LowQualityBinder lqBinder = GameObject.FindGameObjectWithTag("Player").GetComponent<LowQualityBinder>();
+
+        switch (_GraphicsQuality)
+        {
+            case GraphicsQuality.LOW:
+                levelText.SetActive(true);
+                lqBinder.enabled = true;
+                break;
+            case GraphicsQuality.MEDIUM:
+                levelText.SetActive(false);
+                lqBinder.enabled = false;
+                break;
+            case GraphicsQuality.HIGH:
+                levelText.SetActive(false);
+                lqBinder.enabled = false;
+                break;
+            default:
+                break;
+        }
     }
 
     private void OnApplicationQuit()
