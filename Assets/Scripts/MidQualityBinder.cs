@@ -1,16 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Linq;
 
 public class MidQualityBinder : MonoBehaviour
 {
-    void Start()
+    [SerializeField] private Light directionalLight = null;
+
+    private void OnEnable()
     {
-        
+        updateShader();
     }
 
-    void Update()
+    private void updateShader()
     {
-        
+        //Shader.SetGlobalVector("_LightDirection", directionalLight.transform.forward);
+        directionalLight.gameObject.SetActive(true);
+        Shader.SetGlobalVector("_LightDirection", -directionalLight.transform.forward);
+        directionalLight.gameObject.SetActive(false);
+
+        Shader.SetGlobalVector("_ViewPos", Camera.main.transform.position);
+
+        GameObject.FindGameObjectsWithTag("wall").ToList().ForEach(
+            wallObj =>
+            {
+                var wall = wallObj.GetComponent<Wall>();
+                wall.setColor(wall.color);
+            }
+        );
+
     }
+
 }

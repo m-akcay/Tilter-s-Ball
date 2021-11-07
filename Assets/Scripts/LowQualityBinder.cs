@@ -16,7 +16,10 @@ public class LowQualityBinder : MonoBehaviour
 
     void Update()
     {
-        if (ball.collidedWithHole)
-            levelText.text = (ball.currentLevel - 1).ToString();
+        if (ball.updateLevelText)
+        {
+            levelText.text = (ball.currentLevel).ToString();
+            ball.updateLevelText = false;
+        }
     }
 }

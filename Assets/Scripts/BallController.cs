@@ -29,6 +29,7 @@ public class BallController : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelText = null;
 
     public int currentLevel { get { return lvlManager.currentLevel - 1; } }
+    public bool updateLevelText { get; set; }
 
     public void Start()
     {
@@ -162,8 +163,7 @@ public class BallController : MonoBehaviour
                 Debug.Log(this.score);
                 postFXBinder.disableFX();
 
-                //if (UIController.getGraphicsQuality() == GraphicsQuality.LOW)
-                //    levelText.text = (lvlManager.currentLevel - 1).ToString();
+                this.updateLevelText = true;
             }
         }
         
@@ -179,6 +179,10 @@ public class BallController : MonoBehaviour
         if (other.gameObject.tag == "finisher")
         {
             postFXBinder.disableFX();
+
+            this.levelText.text = "";
+            this.levelText.gameObject.SetActive(false);
+
             StartCoroutine(lvlManager.endGame());
 
             if (PlayerPrefs.GetInt("highscore") < this.score)

@@ -13,10 +13,8 @@ public class LevelManager : MonoBehaviour
     public int currentLevel { get; private set; } = 1;
     [HideInInspector]
     public bool shouldCreateNewLevel;
-    private float deltaTime;
     private Level lastCreatedLevel;
-    //[SerializeField]
-    //private Text fpsText = null;
+
     [SerializeField]
     private GameObject finisherObj = null;
     [SerializeField] private GameObject startButton = null;
@@ -58,9 +56,6 @@ public class LevelManager : MonoBehaviour
         if (gameIsStopped)
             return;
 
-        //deltaTime += (Time.deltaTime - deltaTime) * 0.1f;
-        //float fps = 1.0f / deltaTime;
-        //fpsText.text = fps.ToString();
         Wall.SPAWN_Z = lastCreatedLevel.walls[0].transform.position.z + 2;
 
         // put finisherObj between this and next level so that

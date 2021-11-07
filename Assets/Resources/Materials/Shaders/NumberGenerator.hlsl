@@ -5,6 +5,7 @@ int getNumOfDigits(in int level, out int4 digits)
 	digits = int4(0, 0, 0, 0);
 	int _digits[4] = { 0, 0, 0, 0 };
 
+	// unroll maybe?
 	for (uint i = 3; i >= 0; i--)
 	{
 		numOfDigits++;
@@ -26,7 +27,7 @@ float3 getUV(in float2 baseUV, in int level)
 {
 	int4 digits;
 	int numOfDigits = getNumOfDigits(level, digits);
-	float2 uv = float2(baseUV.x, baseUV.y);
+	float2 uv = baseUV;
 
 	float splitValue = 1.0f / numOfDigits;
 	for (int i = 0; i < numOfDigits; i++)
@@ -43,8 +44,6 @@ float3 getUV(in float2 baseUV, in int level)
 
 void sampleNumber_float(in SamplerState ss, in Texture2DArray arr, in float2 baseUV, in int level, out float4 outColor)
 {
-	// flip uv
-	//float2 uv = float2(1 - baseUV.x, 1 - baseUV.y);
 	float3 uv_level = getUV(baseUV, level);
 	outColor = SAMPLE_TEXTURE2D_ARRAY(arr, ss, uv_level.xy, (int)uv_level.z);
 }

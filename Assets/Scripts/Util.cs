@@ -27,7 +27,7 @@ public class Util
     }
     public static void createPointTexture()
     {
-        createTextureArray();
+        //createTextureArray();
 
         Color PURPLE = new Color(0.719f, 0, 1.0f);
         Color BLUE = new Color(0, 0, 1.0f);

@@ -104,6 +104,14 @@ public abstract class Wall : MonoBehaviour
 
             this.color = color;
             mat.SetColor("_BaseColor", color);
+            if (showLevel)
+            {
+                mat.SetInt("showLevel", 1);
+                mat.SetInt("level", this.levelNo);
+                //mat.SetVector("_LightDirection", GameObject.Find("Directional Light").transform.forward);
+                //mat.SetVector("_ViewPos", Camera.main.transform.position);
+                
+            }
 
             this.GetComponent<MeshRenderer>().material = mat;
         }
@@ -131,7 +139,7 @@ public abstract class Wall : MonoBehaviour
                 setMaterial_LOW();
                 break;
             case GraphicsQuality.MEDIUM:
-                setMaterial_HIGH();
+                setMaterial_MID();
                 break;
             case GraphicsQuality.HIGH:
                 setMaterial_HIGH();

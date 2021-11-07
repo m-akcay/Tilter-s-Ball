@@ -79,9 +79,12 @@ public class UIController : MonoBehaviour
         LevelManager.gameIsStopped = false;
         var levels = new List<GameObject>(GameObject.FindGameObjectsWithTag("level"));
         levels.ForEach(level => level.GetComponent<Level>().activate());
-        GameObject.FindGameObjectWithTag("Player").GetComponent<BallController>().activate();
+        var player = GameObject.FindGameObjectWithTag("Player");
+        player.GetComponent<BallController>().activate();
         startButton.SetActive(false);
         settingsButton.SetActive(false);
+        if (_GraphicsQuality == GraphicsQuality.LOW)
+            levelText.SetActive(true);
     }
 
     public void stopGame()
@@ -162,20 +165,24 @@ public class UIController : MonoBehaviour
         );
 
         LowQualityBinder lqBinder = GameObject.FindGameObjectWithTag("Player").GetComponent<LowQualityBinder>();
+        MidQualityBinder mqBinder = GameObject.FindGameObjectWithTag("Player").GetComponent<MidQualityBinder>();
 
         switch (_GraphicsQuality)
         {
             case GraphicsQuality.LOW:
                 levelText.SetActive(true);
                 lqBinder.enabled = true;
+                mqBinder.enabled = false;
                 break;
             case GraphicsQuality.MEDIUM:
                 levelText.SetActive(false);
                 lqBinder.enabled = false;
+                mqBinder.enabled = true;
                 break;
             case GraphicsQuality.HIGH:
                 levelText.SetActive(false);
                 lqBinder.enabled = false;
+                mqBinder.enabled = false;
                 break;
             default:
                 break;
