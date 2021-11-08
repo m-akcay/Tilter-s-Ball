@@ -25,6 +25,7 @@ Shader "Unlit/SideWallShader"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile QUALITY_LOW QUALITY_MEDIUM QUALITY_HIGH
 
             #include "UnityCG.cginc"
             #include "Util.hlsl"
@@ -64,6 +65,9 @@ Shader "Unlit/SideWallShader"
 
             half4 frag(FragInput i) : SV_Target
             {
+#if QUALITY_LOW
+                return half4(_LevelColor.rgb, 0.2);
+#elif QUALITY_MEDIUM || QUALITY_HIGH
                 half4 col = half4(1, 1, 1, 0);
                 half distX = distance(ballPos.x, thisWallPosX);
                 if (distX < 0.5)
@@ -89,8 +93,8 @@ Shader "Unlit/SideWallShader"
 
                     col.a = clamp(col.a, 0.0, 1.0);
                 }
-
                 return col;
+#endif
             }
 
             ENDHLSL

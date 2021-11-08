@@ -81,9 +81,7 @@
                 else
                     col = _BaseColor;
 
-                col = float4(simpleLighting(col, i.positionWS.xyz), 1);
-                //col = _BaseColor;
-                return col;
+                return float4(simpleLighting(col, i.positionWS.xyz), 1);
             }
 
             float3 simpleLighting(in float3 surfaceColor, in float3 positionWS)

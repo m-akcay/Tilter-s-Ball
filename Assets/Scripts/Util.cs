@@ -116,7 +116,7 @@ public class Util
             texArray.SetPixels(tex.GetPixels(), i);
         }
 
-        AssetDatabase.CreateAsset(texArray, "Assets/NumberTextureArray_MID.asset");
+        //AssetDatabase.CreateAsset(texArray, "Assets/NumberTextureArray_MID.asset");
     }
 }
 

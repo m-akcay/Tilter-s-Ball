@@ -7,7 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.VFX;
 
 public class BallController : MonoBehaviour
-{
+{ 
     private int score;
     private int scoreFromThisLevel = 0;
     private Rigidbody rb;

@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] private InterstitialAds ADS = null;
+    private int failCounter = 0;
+
     [SerializeField]
     private bool firstTime = true;
     public static bool gameIsStopped = true;
@@ -114,7 +117,22 @@ public class LevelManager : MonoBehaviour
         gameIsStopped = true;
         var levels = new List<GameObject>(GameObject.FindGameObjectsWithTag("level"));
         levels.ForEach(level => level.GetComponent<Level>().destroy());
+        
+        failCounter++;
+        bool shouldShowAd = failCounter == 2 || currentLevel > 39;
+        if (shouldShowAd)
+            ADS.LoadAd();
+
         yield return new WaitForSeconds(3);
+        
+        if (shouldShowAd)
+        {
+            failCounter = 0;
+            ADS.ShowAd();
+        }
+
+        yield return new WaitForSeconds(1.5f);
+
         startButton.SetActive(true);
         settingsButton.SetActive(true);
     }

@@ -84,7 +84,10 @@ public class UIController : MonoBehaviour
         startButton.SetActive(false);
         settingsButton.SetActive(false);
         if (_GraphicsQuality == GraphicsQuality.LOW)
+        {
             levelText.SetActive(true);
+            levelText.GetComponent<TextMeshProUGUI>().text = "";
+        }
     }
 
     public void stopGame()
@@ -170,19 +173,25 @@ public class UIController : MonoBehaviour
         switch (_GraphicsQuality)
         {
             case GraphicsQuality.LOW:
-                levelText.SetActive(true);
                 lqBinder.enabled = true;
                 mqBinder.enabled = false;
+                Shader.EnableKeyword("QUALITY_LOW");
+                Shader.DisableKeyword("QUALITY_MEDIUM");
+                Shader.DisableKeyword("QUALITY_HIGH");
                 break;
             case GraphicsQuality.MEDIUM:
-                levelText.SetActive(false);
                 lqBinder.enabled = false;
                 mqBinder.enabled = true;
+                Shader.DisableKeyword("QUALITY_LOW");
+                Shader.EnableKeyword("QUALITY_MEDIUM");
+                Shader.DisableKeyword("QUALITY_HIGH");
                 break;
             case GraphicsQuality.HIGH:
-                levelText.SetActive(false);
                 lqBinder.enabled = false;
                 mqBinder.enabled = false;
+                Shader.DisableKeyword("QUALITY_LOW");
+                Shader.DisableKeyword("QUALITY_MEDIUM");
+                Shader.EnableKeyword("QUALITY_HIGH");
                 break;
             default:
                 break;
