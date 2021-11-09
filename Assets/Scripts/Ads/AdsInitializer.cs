@@ -1,49 +1,40 @@
 ﻿using System.IO;
 using UnityEngine;
 using UnityEngine.Advertisements;
+using UnityEngine.Scripting;
+
 
 public class AdsInitializer : MonoBehaviour, IUnityAdsInitializationListener
 {
+
     [SerializeField] string _androidGameId = "";
     [SerializeField] string _iOsGameId = "";
     [SerializeField] bool _testMode = true;
     [SerializeField] bool _enablePerPlacementMode = true;
     private string _gameId = "";
-
-    void Awake()
+    
+    private void Awake()
     {
         InitializeAds();
     }
 
     private void loadGameIds()
     {
-        string path = $"Assets/Scripts/Ads/App_ids.id";
-        if (File.Exists(path))
+        try
         {
-            try
-            {
-                var reader = new StreamReader(path);
-                _androidGameId = reader.ReadLine();
-                _iOsGameId = reader.ReadLine();
-                Debug.Log($"{_androidGameId}\n" +
-                    $"{_iOsGameId}");
-                reader.Close();
-
-            }
-            catch (System.Exception)
-            {
-                Debug.LogError("2 lines text named \"App_ids.id\" that contains app ids should be like this ->\n" +
-                    "androidAppId\n" +
-                    "iosAppId");
-                throw;
-            }
+            TextAsset gameIdText = Resources.Load("App_ids") as TextAsset;
+            var lines = gameIdText.text.Split('\n');
+            _androidGameId = lines[0].Substring(0, lines[0].Length - 1);
+            _iOsGameId = lines[1];
         }
-        else
+        catch (System.Exception)
         {
-            Debug.LogError($"You should have some text file and path should be \"{path}\"");
-            return;
+            Debug.LogError("Error loading app ids, ads won't work.");
+            throw;
         }
     }
+
+    
     public void InitializeAds()
     {
         loadGameIds();

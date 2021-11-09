@@ -70,5 +70,6 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
-# game ids
-*.id
+# private info
+App_ids.txt
+*.keystore

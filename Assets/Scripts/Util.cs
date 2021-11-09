@@ -107,15 +107,13 @@ public class Util
 
     private static void createTextureArray()
     {
-        var texArray = new Texture2DArray(256, 256, 10, TextureFormat.ARGB32, false);
+        var texArray = new Texture2DArray(128, 128, 10, TextureFormat.RGB24, false);
         for (int i = 0; i < 10; i++)
         {
             string texName = $"normal_{i}_tex";
             var tex = Resources.Load($"Number Textures/{texName}") as Texture2D;
-
             texArray.SetPixels(tex.GetPixels(), i);
         }
-
         //AssetDatabase.CreateAsset(texArray, "Assets/NumberTextureArray_MID.asset");
     }
 }
